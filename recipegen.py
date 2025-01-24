@@ -1,9 +1,10 @@
 import streamlit as st
 import cohere
 
-co = cohere.Client("CIchyPViQQtN7NQyS0jiOvIE7KjUtKTTVY3DPzOf") 
+co = cohere.Client("CIchyPViQQtN7NQyS0jiOvIE7KjUtKTTVY3DPzOf")
 
 st.title("Gourmet Alchemy")
+
 
 def generate_recipe(ingredients, cuisine, calories, meal, filter, duration):
     prompt = (
@@ -12,15 +13,15 @@ def generate_recipe(ingredients, cuisine, calories, meal, filter, duration):
         f"The recipe should have {calories} calories.Take into the considerations of the calories "
         f"It should be a {meal} meal. "
         f"The meal type option is: {filter}. "
-        f"The recipe should take around {duration} to prepare."
+        f"The recipe should take around {duration} to prepare. give me a full step by step recipe for the above it should sound like a cookbook recipe and should be very professional"
     )
-    
+
     response = co.generate(
         model='c4ai-aya-23',
         prompt=prompt,
-        max_tokens=1000,
-        temperature=0.7,
-        stop_sequences=["##"]
+        max_tokens=2000,
+        temperature=0.9,
+        stop_sequences=[]
     )
     print(response.generations[0].text)
     return response.generations[0].text
@@ -37,5 +38,5 @@ submit_button = st.button("Generate Recipe")
 if submit_button:
     st.write("Generating a customized meal for you...")
     recipe = generate_recipe(ingredients, cuisine, calories, meal, filter, duration)
-    st.write(recipe)
+    st.markdown(recipe)
     st.download_button(label="Download Recipe", data=recipe, file_name="recipe.txt", mime="text/plain")
